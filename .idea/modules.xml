@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ParkingBuddy.iml" filepath="$PROJECT_DIR$/ParkingBuddy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../android/adt-bundle-windows-x86_64-20131030/sdk/extras/google/google_play_services/libproject/google-play-services_lib/google-play-services_lib1.iml" filepath="$PROJECT_DIR$/../../android/adt-bundle-windows-x86_64-20131030/sdk/extras/google/google_play_services/libproject/google-play-services_lib/google-play-services_lib1.iml" />
     </modules>
   </component>
 </project>
