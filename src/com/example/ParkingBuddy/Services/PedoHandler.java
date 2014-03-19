@@ -65,7 +65,11 @@ public class PedoHandler extends Service implements SensorEventListener {
 
     }
     private void startLocationManager(){
+        Log.e(TAG,"i updated the location");
         locationManager=(LocationManager)getSystemService(getApplicationContext().LOCATION_SERVICE);
+        carLocation=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        /* we can use this to update the location data
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -87,7 +91,7 @@ public class PedoHandler extends Service implements SensorEventListener {
             public void onProviderDisabled(String s) {
 
             }
-        });
+        });*/
     }
     private void saveLocation(){
         parkingData.saveLocation(carLocation);

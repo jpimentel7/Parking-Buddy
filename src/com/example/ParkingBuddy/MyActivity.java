@@ -2,7 +2,7 @@ package com.example.ParkingBuddy;
 
 import android.app.Activity;
 import android.content.Context;
-import android.location.Criteria;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import com.example.ParkingBuddy.ParkingData.ParkingData;
+import com.example.ParkingBuddy.Services.PedoHandler;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -20,7 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MyActivity extends Activity {
     /**
-     * Called when the activity is first created.
+     *
      */
     ParkingData parkingData;
     Location userLocation;
@@ -35,6 +36,7 @@ public class MyActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         //will set everything up
+        startService(new Intent(this, PedoHandler.class));
         configure();
         //check to see if there is a valid saved location and sets a marker if there is
         //for when the user closes the app and restarts
@@ -135,12 +137,22 @@ public class MyActivity extends Activity {
     @Override
     protected void onRestart() {
         super.onRestart();
+        if((parkingData.locationSaved())&&(markerPlaced==false))
+        {
+            Log.e(TAG,"location has been set Onrestarted");
+            setMarker();
+        }
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if((parkingData.locationSaved())&&(markerPlaced==false))
+        {
+            Log.e(TAG,"location has been set onResume");
+            setMarker();
+        }
     }
 
     @Override
