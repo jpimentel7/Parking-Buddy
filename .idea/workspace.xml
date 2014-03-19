@@ -25,8 +25,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c4b4ea1f-ace1-4119-915c-4d0464cc1a5a" name="Default" comment="">
-      <change type="DELETED" beforePath="C:\Users\javier\Documents\Parking Buddy\Parking-Buddy\src\com\example\ParkingBuddy\Services\GpsHandler.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/example/ParkingBuddy/MyActivity.java" afterPath="$PROJECT_DIR$/src/com/example/ParkingBuddy/MyActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ParkingBuddy.iws" />
@@ -607,7 +605,11 @@
       <created>1395208144325</created>
       <updated>1395208144325</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="I imported the google library and made a map display&#10;">
+      <created>1395209003542</created>
+      <updated>1395209003542</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="ToolWindowManager">
