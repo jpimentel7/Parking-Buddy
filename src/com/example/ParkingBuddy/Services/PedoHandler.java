@@ -7,8 +7,14 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.util.Log;
+import com.example.ParkingBuddy.ParkingData.ParkingData;
 
 /**
  * Created by javier on 3/18/14.
@@ -17,6 +23,9 @@ public class PedoHandler extends Service implements SensorEventListener {
     private SensorManager sensorManager;
     private int count=0;
     private static final String TAG ="service";
+    LocationManager locationManager;
+    Location carLocation;
+    ParkingData parkingData;
 
     @Override
     public void onCreate()
@@ -24,13 +33,15 @@ public class PedoHandler extends Service implements SensorEventListener {
         super.onCreate();
         sensorManager=(SensorManager) getApplicationContext().getSystemService(getApplicationContext().SENSOR_SERVICE);
         sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR),SensorManager.SENSOR_DELAY_NORMAL);
+        parkingData=new ParkingData(getApplicationContext());
         Log.e(TAG, "look i started");
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         sensorManager.unregisterListener(this,sensorManager.getDefaultSensor((Sensor.TYPE_STEP_DETECTOR)));
+        Log.e(TAG,"look i was called");
+        super.onDestroy();
     }
 
     @Override
@@ -39,26 +50,58 @@ public class PedoHandler extends Service implements SensorEventListener {
 
         if(event.values[0]==1.0f)
         {
-            Log.e(TAG,"look i dectected a change and update count:"+count);
-            //this means there was a step detected
+            Log.e(TAG,"look i dectected a change and updated count:"+count);
             count++;
+            //the location is saved after the third step and the location manager is started
+            if(count==2){
+                startLocationManager();
+            }
+            if (count==3){
+                saveLocation();
+            }
 
         }
 
 
+    }
+    private void startLocationManager(){
+        locationManager=(LocationManager)getSystemService(getApplicationContext().LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                carLocation=location;
+                locationManager.removeUpdates(this);
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        });
+    }
+    private void saveLocation(){
+        parkingData.saveLocation(carLocation);
+        //gives a quick vibrate to let the user know his location has been saved
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 300 milliseconds
+        v.vibrate(300);
+        stopSelf();
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-
-
-    public int getCount() {
-        return count;
-    }
-
-
     @Override
     public IBinder onBind(Intent intent) {
         return null;

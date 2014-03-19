@@ -25,6 +25,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c4b4ea1f-ace1-4119-915c-4d0464cc1a5a" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AndroidManifest.xml" afterPath="$PROJECT_DIR$/AndroidManifest.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/example/ParkingBuddy/Services/PedoHandler.java" afterPath="$PROJECT_DIR$/src/com/example/ParkingBuddy/Services/PedoHandler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ParkingBuddy.iws" />
@@ -111,8 +113,10 @@
       <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="121" selection-start="856" selection-end="856" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="561">
-              <folding />
+            <state line="14" column="52" selection-start="724" selection-end="724" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="612">
+              <folding>
+                <element signature="e#298#316#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -132,8 +136,9 @@
       <file leaf-file-name="MyActivity.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/example/ParkingBuddy/MyActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="29" selection-start="353" selection-end="353" vertical-scroll-proportion="0.2992" vertical-offset="0" max-vertical-offset="2822">
+            <state line="95" column="14" selection-start="3684" selection-end="3684" vertical-scroll-proportion="0.1296" vertical-offset="1534" max-vertical-offset="2822">
               <folding>
+                <element signature="imports" expanded="true" />
                 <element signature="e#1862#2051#0" expanded="true" />
                 <element signature="e#2044#2045#0" expanded="true" />
                 <element signature="e#2093#2474#0" expanded="true" />
@@ -146,11 +151,9 @@
       <file leaf-file-name="PedoHandler.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/example/ParkingBuddy/Services/PedoHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="44" column="0" selection-start="1474" selection-end="1474" vertical-scroll-proportion="0.0" vertical-offset="97" max-vertical-offset="1207">
+            <state line="31" column="5" selection-start="937" selection-end="937" vertical-scroll-proportion="0.0" vertical-offset="255" max-vertical-offset="1938">
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1608#1609#0" expanded="true" />
-                <element signature="e#1636#1637#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -175,13 +178,13 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/res/values/strings.xml" />
-        <option value="$PROJECT_DIR$/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/res/layout/activity_menu.xml" />
         <option value="$PROJECT_DIR$/res/layout/main.xml" />
         <option value="$PROJECT_DIR$/src/com/example/ParkingBuddy/Services/GpsHandler.java" />
-        <option value="$PROJECT_DIR$/src/com/example/ParkingBuddy/Services/PedoHandler.java" />
         <option value="$PROJECT_DIR$/src/com/example/ParkingBuddy/ParkingData/ParkingData.java" />
         <option value="$PROJECT_DIR$/src/com/example/ParkingBuddy/MyActivity.java" />
+        <option value="$PROJECT_DIR$/src/com/example/ParkingBuddy/Services/PedoHandler.java" />
+        <option value="$PROJECT_DIR$/AndroidManifest.xml" />
       </list>
     </option>
   </component>
@@ -609,7 +612,11 @@
       <created>1395209003542</created>
       <updated>1395209003542</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="I imported the google library and made a map display&#10;">
+      <created>1395209009202</created>
+      <updated>1395209009202</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -671,7 +678,9 @@
     <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="15" column="121" selection-start="856" selection-end="856" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="561">
-          <folding />
+          <folding>
+            <element signature="e#298#316#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -703,6 +712,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="33" column="28" selection-start="1360" selection-end="1360" vertical-scroll-proportion="0.0" vertical-offset="561" max-vertical-offset="952">
           <folding>
+            <element signature="imports" expanded="true" />
             <element signature="e#1862#2051#0" expanded="true" />
             <element signature="e#2044#2045#0" expanded="true" />
             <element signature="e#2093#2474#0" expanded="true" />
@@ -714,7 +724,9 @@
     <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="15" column="121" selection-start="856" selection-end="856" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="561">
-          <folding />
+          <folding>
+            <element signature="e#298#316#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -739,6 +751,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="5" column="13" selection-start="104" selection-end="104" vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="357">
           <folding>
+            <element signature="imports" expanded="true" />
             <element signature="e#1862#2051#0" expanded="true" />
             <element signature="e#2044#2045#0" expanded="true" />
             <element signature="e#2093#2474#0" expanded="true" />
@@ -750,7 +763,9 @@
     <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="15" column="18" selection-start="753" selection-end="753" vertical-scroll-proportion="0.0" vertical-offset="255" max-vertical-offset="544">
-          <folding />
+          <folding>
+            <element signature="e#298#316#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -775,6 +790,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="5" column="13" selection-start="104" selection-end="104" vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="357">
           <folding>
+            <element signature="imports" expanded="true" />
             <element signature="e#1862#2051#0" expanded="true" />
             <element signature="e#2044#2045#0" expanded="true" />
             <element signature="e#2093#2474#0" expanded="true" />
@@ -824,24 +840,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="121" selection-start="856" selection-end="856" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="561">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/example/ParkingBuddy/Services/PedoHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="0" selection-start="1474" selection-end="1474" vertical-scroll-proportion="0.0" vertical-offset="97" max-vertical-offset="1207">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1608#1609#0" expanded="true" />
-            <element signature="e#1636#1637#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/example/ParkingBuddy/ParkingData/ParkingData.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="43" column="0" selection-start="1264" selection-end="1264" vertical-scroll-proportion="0.26771653" vertical-offset="459" max-vertical-offset="1224">
@@ -851,15 +849,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../../GitHub/2014-CSUN-Cam4Blind/src/com/ss12/camacc/CameraFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="0" selection-start="1606" selection-end="1606" vertical-scroll-proportion="-0.0544" vertical-offset="357" max-vertical-offset="7208">
+        <state line="51" column="0" selection-start="1606" selection-end="1606" vertical-scroll-proportion="-10.016" vertical-offset="6583" max-vertical-offset="7208">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="52" selection-start="724" selection-end="724" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="612">
+          <folding>
+            <element signature="e#298#316#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/example/ParkingBuddy/Services/PedoHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="31" column="5" selection-start="937" selection-end="937" vertical-scroll-proportion="0.0" vertical-offset="255" max-vertical-offset="1938">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/example/ParkingBuddy/MyActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="29" selection-start="353" selection-end="353" vertical-scroll-proportion="0.2992" vertical-offset="0" max-vertical-offset="2822">
+        <state line="95" column="14" selection-start="3684" selection-end="3684" vertical-scroll-proportion="0.1296" vertical-offset="1534" max-vertical-offset="2822">
           <folding>
+            <element signature="imports" expanded="true" />
             <element signature="e#1862#2051#0" expanded="true" />
             <element signature="e#2044#2045#0" expanded="true" />
             <element signature="e#2093#2474#0" expanded="true" />
