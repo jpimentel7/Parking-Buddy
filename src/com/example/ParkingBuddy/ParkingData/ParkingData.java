@@ -37,7 +37,7 @@ public class ParkingData {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         String longitude = Double.toString(location.getLongitude());
         String latitude =Double.toString(location.getLatitude());
-        editor.putBoolean("Location",true);
+        editor.putBoolean("location",true);
         editor.putString("long",longitude);
         editor.putString("lat",latitude);
         editor.commit();
@@ -53,10 +53,14 @@ public class ParkingData {
         return location;
     }
 
-    public void setUserLocation(){
+
+
+    public void deleteUserLocation(){
         SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("Location",false);
+        editor.putBoolean("location",false);
+        editor.putString("long", "0.0");
+        editor.putString("lat","0.0");
         editor.commit();
 
     }
