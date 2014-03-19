@@ -10,13 +10,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 import com.example.ParkingBuddy.ParkingData.ParkingData;
-import com.example.ParkingBuddy.Services.GpsHandler;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -30,13 +27,52 @@ public class MyActivity extends Activity {
     LocationManager locationManager;
     GoogleMap map;
     final static String TAG="test";
-
-    //makes sure we dont put too makers
+    //makes sure we dont put two makers
     boolean markerPlaced=false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        //will set everything up
+        configure();
+        //check to see if there is a valid saved location and sets a marker if there is
+        //for when the user closes the app and restarts
+        if((parkingData.locationSaved())&&(markerPlaced==false))
+        {
+            Log.e(TAG,"location has been set when app restarted");
+            setMarker();
+        }
+        Button saveLocation=(Button)findViewById(R.id.save);
+        Button clearLocation=(Button)findViewById(R.id.clear);
+        saveLocation.setOnClickListener(saveHandler);
+        clearLocation.setOnClickListener(clearHandler);
+      }
+
+    View.OnClickListener saveHandler = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View view) {
+            //checks the location data and set the marker
+           setMarker();
+        }
+    };
+    View.OnClickListener clearHandler = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View view)
+        {
+            GoogleMap map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
+            //remove everything on the map including the marker
+            map.clear();
+            markerPlaced=false;
+            parkingData.deleteUserLocation();
+        }
+    };
+    private void configure()
+    {
+        //this method will init everything
+        //
         parkingData= new ParkingData(getApplicationContext());
         //get the last gps based location
         locationManager=(LocationManager)getSystemService(getApplicationContext().LOCATION_SERVICE);
@@ -46,39 +82,14 @@ public class MyActivity extends Activity {
         CameraPosition cameraPosition = new CameraPosition.Builder().target(
                 new LatLng(userLocation.getLatitude(),userLocation.getLongitude())).zoom(17).build();
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        //check to see if there is a valid saved location and sets a marker if there is
-        /*
-        if((parkingData.locationSaved())&&(!markerPlaced)){
-            Log.e(TAG,"i should not be outputing");
-            setMarker();
-        }*/
+    }
 
-        Button saveLocation=(Button)findViewById(R.id.save);
-        Button clearLocation=(Button)findViewById(R.id.clear);
-        saveLocation.setOnClickListener(handler1);
-        clearLocation.setOnClickListener(handler2);
-      }
-
-    View.OnClickListener handler1 = new View.OnClickListener(){
-        @Override
-        public void onClick(View view) {
-           setMarker();
-        }
-    };
-    View.OnClickListener handler2 = new View.OnClickListener(){
-        @Override
-        public void onClick(View view){
-            GoogleMap map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
-            map.clear();
-            markerPlaced=false;
-            parkingData.deleteUserLocation();
-        }
-    };
     public void setMarker()
     {
+        //check to see if it is null ! GoogleMap map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
 
-        //GoogleMap map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
-        //will add the user location to the sharepref
+        //will add the user location to the sharepref if the location is not null
+        //if the location is null it will update it
         if(userLocation!=null){
             Log.e(TAG,"location is null wtf");
             parkingData.saveLocation(userLocation);
@@ -107,11 +118,11 @@ public class MyActivity extends Activity {
                 }
             });
         }
-        //will add a maker with the users location
+        //will add a maker with the users location if there is not a marker in place
         //should check how old the location data is maybe if older then 10 hours delete
-        if(parkingData.locationSaved()&&(!markerPlaced)){
+        if(parkingData.locationSaved()&&(markerPlaced==false)){
             // will display the maker
-            Log.e(TAG,"location is set");
+            Log.e(TAG,"location maker set");
             MarkerOptions marker = new MarkerOptions().position(
                     new LatLng(parkingData.getUserLocation().getLatitude(), parkingData.getUserLocation().getLongitude()
                     )).title("My Car");
@@ -145,7 +156,5 @@ public class MyActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //so that we know to replace the marker when the app restarts
-        //markerPlaced=false;
     }
 }
