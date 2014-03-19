@@ -10,8 +10,14 @@
       <config />
     </shared>
   </component>
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="java" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="c4b4ea1f-ace1-4119-915c-4d0464cc1a5a" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/example/ParkingBuddy/ParkingData/ParkingData.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/layout/activity_menu.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/example/ParkingBuddy/MyActivity.java" afterPath="$PROJECT_DIR$/src/com/example/ParkingBuddy/MyActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ParkingBuddy.iws" />
@@ -76,31 +82,43 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="AndroidManifest.xml" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="121" selection-start="856" selection-end="856" vertical-scroll-proportion="0.46532845" vertical-offset="0" max-vertical-offset="561">
+            <state line="15" column="121" selection-start="856" selection-end="856" vertical-scroll-proportion="0.0" vertical-offset="255" max-vertical-offset="561">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.xml" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="ParkingData.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/example/ParkingBuddy/ParkingData/ParkingData.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="33" column="4" selection-start="801" selection-end="801" vertical-scroll-proportion="0.0" vertical-offset="561" max-vertical-offset="1224">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.xml" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/res/layout/main.xml">
           <provider editor-type-id="android-designer">
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="58" selection-start="338" selection-end="338" vertical-scroll-proportion="-3.4" vertical-offset="0" max-vertical-offset="187">
+            <state line="0" column="8" selection-start="8" selection-end="8" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="462">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="strings.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/res/values/strings.xml">
+      <file leaf-file-name="activity_menu.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/res/layout/activity_menu.xml">
+          <provider editor-type-id="android-designer">
+            <state />
+          </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="36" selection-start="87" selection-end="87" vertical-scroll-proportion="0.0" vertical-offset="34" max-vertical-offset="170">
+            <state line="22" column="7" selection-start="736" selection-end="736" vertical-scroll-proportion="-14.96" vertical-offset="0" max-vertical-offset="476">
               <folding />
             </state>
           </provider>
@@ -109,7 +127,7 @@
       <file leaf-file-name="MyActivity.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/example/ParkingBuddy/MyActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="13" selection-start="104" selection-end="104" vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="357">
+            <state line="32" column="114" selection-start="1346" selection-end="1346" vertical-scroll-proportion="0.0" vertical-offset="289" max-vertical-offset="816">
               <folding />
             </state>
           </provider>
@@ -134,8 +152,11 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/res/values/strings.xml" />
-        <option value="$PROJECT_DIR$/res/layout/main.xml" />
         <option value="$PROJECT_DIR$/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/res/layout/activity_menu.xml" />
+        <option value="$PROJECT_DIR$/src/com/example/ParkingBuddy/ParkingData/ParkingData.java" />
+        <option value="$PROJECT_DIR$/res/layout/main.xml" />
+        <option value="$PROJECT_DIR$/src/com/example/ParkingBuddy/MyActivity.java" />
       </list>
     </option>
   </component>
@@ -177,6 +198,7 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -297,7 +319,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -316,6 +337,12 @@
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="recentsLimit" value="5" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../android/adt-bundle-windows-x86_64-20131030/sdk/extras/google/google_play_services/libproject/google-play-services_lib/libs/google-play-services.jar!/" />
+    <property name="FullScreen" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\javier\Documents\Parking Buddy\Parking-Buddy\src\com\example\ParkingBuddy\ParkingData" />
+    </key>
   </component>
   <component name="RunManager" selected="Android Application.ParkingBuddy">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin" singleton="true">
@@ -475,6 +502,11 @@
     </configuration>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SliceManager">
+    <option name="analysisUIOptions">
+      <AnalysisUIOptions />
+    </option>
+  </component>
   <component name="SvnConfiguration" maxAnnotateRevisions="500" myUseAcceleration="nothing" myAutoUpdateAfterCommit="false" cleanupOnStartRun="false" SSL_PROTOCOLS="sslv3">
     <option name="USER" value="" />
     <option name="PASSWORD" value="" />
@@ -503,17 +535,21 @@
       <created>1395121086158</created>
       <updated>1395121086158</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="I imported the google library and made a map display&#10;">
+      <created>1395121888745</created>
+      <updated>1395121888745</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1456" height="876" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298611" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3298611" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -522,15 +558,15 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25357607" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899868" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2886866" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24930556" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899868" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32769832" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -551,7 +587,8 @@
       <TodoPanelSettings />
     </option>
     <MESSAGE value="I imported the google library and made a map display" />
-    <option name="LAST_COMMIT_MESSAGE" value="I imported the google library and made a map display" />
+    <MESSAGE value="I imported the google library and made a map display&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="I imported the google library and made a map display&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -561,6 +598,85 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="121" selection-start="856" selection-end="856" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="561">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/example/ParkingBuddy/ParkingData/ParkingData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="33" column="4" selection-start="801" selection-end="801" vertical-scroll-proportion="0.0" vertical-offset="561" max-vertical-offset="1224">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/layout/main.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="14" selection-start="836" selection-end="836" vertical-scroll-proportion="0.0" vertical-offset="340" max-vertical-offset="442">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/layout/activity_menu.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="7" selection-start="736" selection-end="736" vertical-scroll-proportion="0.0" vertical-offset="374" max-vertical-offset="476">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="36" selection-start="87" selection-end="87" vertical-scroll-proportion="0.0" vertical-offset="34" max-vertical-offset="170">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/example/ParkingBuddy/MyActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="33" column="28" selection-start="1360" selection-end="1360" vertical-scroll-proportion="0.0" vertical-offset="561" max-vertical-offset="952">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="121" selection-start="856" selection-end="856" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="561">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/layout/main.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="58" selection-start="338" selection-end="338" vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="187">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="36" selection-start="87" selection-end="87" vertical-scroll-proportion="0.0" vertical-offset="34" max-vertical-offset="170">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/example/ParkingBuddy/MyActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="13" selection-start="104" selection-end="104" vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="357">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="15" column="18" selection-start="753" selection-end="753" vertical-scroll-proportion="0.0" vertical-offset="255" max-vertical-offset="544">
@@ -592,16 +708,55 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/Box Sync/Parking Buddy/src/com/example/Parking_Buddy/ParkingLotData/ParkingData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="35" selection-start="470" selection-end="470" vertical-scroll-proportion="0.49635038" vertical-offset="0" max-vertical-offset="1156" />
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Box Sync/Parking Buddy/src/com/example/Parking_Buddy/Services/PedoHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="548" />
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/Temp1_lab assignment 9.zip/lab assignment 9/serviceDemo/src/com/example/serviceDemo/StepCounter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="45" selection-start="928" selection-end="928" vertical-scroll-proportion="0.37956205" vertical-offset="98" max-vertical-offset="1411" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="121" selection-start="856" selection-end="856" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="561">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/example/ParkingBuddy/ParkingData/ParkingData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="33" column="4" selection-start="801" selection-end="801" vertical-scroll-proportion="0.0" vertical-offset="459" max-vertical-offset="1156">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="36" selection-start="87" selection-end="87" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="170">
+        <state line="2" column="36" selection-start="87" selection-end="87" vertical-scroll-proportion="0.05304212" vertical-offset="0" max-vertical-offset="641">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/layout/activity_menu.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="7" selection-start="736" selection-end="736" vertical-scroll-proportion="-14.96" vertical-offset="0" max-vertical-offset="476">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/example/ParkingBuddy/MyActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="13" selection-start="104" selection-end="104" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="357">
+        <state line="32" column="114" selection-start="1346" selection-end="1346" vertical-scroll-proportion="0.0" vertical-offset="289" max-vertical-offset="816">
           <folding />
         </state>
       </provider>
@@ -611,14 +766,7 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="58" selection-start="338" selection-end="338" vertical-scroll-proportion="-3.4" vertical-offset="0" max-vertical-offset="187">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="121" selection-start="856" selection-end="856" vertical-scroll-proportion="0.46532845" vertical-offset="0" max-vertical-offset="561">
+        <state line="0" column="8" selection-start="8" selection-end="8" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="597">
           <folding />
         </state>
       </provider>
