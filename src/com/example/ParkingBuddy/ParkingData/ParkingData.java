@@ -10,13 +10,10 @@ import android.util.Log;
 /**
  * Created by javi on 3/8/14.
  */
-public class ParkingData {
-
+public class ParkingData
+{
     private Context context;
-    private String firstLine;
     private boolean userLocation=false;
-    private SharedPreferences prefs;
-
 
     public ParkingData(Context con)
     {
@@ -33,7 +30,6 @@ public class ParkingData {
     public void saveLocation(Location location)
     {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
         SharedPreferences.Editor editor = sharedPreferences.edit();
         String longitude = Double.toString(location.getLongitude());
         String latitude =Double.toString(location.getLatitude());
@@ -41,11 +37,10 @@ public class ParkingData {
         editor.putString("long",longitude);
         editor.putString("lat",latitude);
         editor.commit();
-
-
     }
 
-    public Location getUserLocation(){
+    public Location getUserLocation()
+    {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         Location location= new Location("user location");
         location.setLongitude(Double.parseDouble(sharedPreferences.getString("long","0.0")));
@@ -53,18 +48,14 @@ public class ParkingData {
         return location;
     }
 
-
-
-    public void deleteUserLocation(){
+    public void deleteUserLocation()
+    {
         SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("location",false);
         editor.putString("long", "0.0");
         editor.putString("lat","0.0");
         editor.commit();
-
     }
-
-
 
 }

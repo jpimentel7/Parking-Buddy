@@ -19,13 +19,15 @@ import com.example.ParkingBuddy.ParkingData.ParkingData;
 /**
  * Created by javier on 3/18/14.
  */
-public class PedoHandler extends Service implements SensorEventListener {
+public class PedoHandler extends Service implements SensorEventListener
+{
     private SensorManager sensorManager;
     private int count=0;
     private static final String TAG ="service";
     LocationManager locationManager;
     Location carLocation;
     ParkingData parkingData;
+    LocationListener locationListener;
 
     @Override
     public void onCreate()
@@ -40,6 +42,7 @@ public class PedoHandler extends Service implements SensorEventListener {
     @Override
     public void onDestroy() {
         sensorManager.unregisterListener(this,sensorManager.getDefaultSensor((Sensor.TYPE_STEP_DETECTOR)));
+        locationManager.removeUpdates(locationListener);
         Log.e(TAG,"look i was called");
         super.onDestroy();
     }
@@ -56,25 +59,26 @@ public class PedoHandler extends Service implements SensorEventListener {
             if(count==2){
                 startLocationManager();
             }
-            if (count==3){
-                saveLocation();
-            }
+
 
         }
 
 
     }
-    private void startLocationManager(){
+    private void startLocationManager()
+    {
         Log.e(TAG,"i updated the location");
         locationManager=(LocationManager)getSystemService(getApplicationContext().LOCATION_SERVICE);
-        carLocation=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        /* we can use this to update the location data
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,new LocationListener() {
+        locationListener= new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                carLocation=location;
-                locationManager.removeUpdates(this);
+                parkingData.saveLocation(carLocation);
+                //gives a quick vibrate to let the user know his location has been saved
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                // Vibrate for 300 milliseconds
+                v.vibrate(300);
+                stopSelf();
+
             }
 
             @Override
@@ -91,15 +95,9 @@ public class PedoHandler extends Service implements SensorEventListener {
             public void onProviderDisabled(String s) {
 
             }
-        });*/
-    }
-    private void saveLocation(){
-        parkingData.saveLocation(carLocation);
-        //gives a quick vibrate to let the user know his location has been saved
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        // Vibrate for 300 milliseconds
-        v.vibrate(300);
-        stopSelf();
+        };
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
     }
 
     @Override
