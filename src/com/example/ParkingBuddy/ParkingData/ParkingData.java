@@ -14,6 +14,18 @@ public class ParkingData
 {
     private Context context;
     private boolean userLocation=false;
+    private Location school;
+    //Parking lots
+    Location g1;
+    Location g2;
+    Location g3;
+    Location g4;
+    Location g5;
+    Location g6;
+    Location g7;
+    Location g8;
+    Location g9;
+
 
     public ParkingData(Context con)
     {
@@ -56,6 +68,97 @@ public class ParkingData
         editor.putString("long", "0.0");
         editor.putString("lat","0.0");
         editor.commit();
+    }
+
+    public String ParkingInformation(Location location)
+    {
+        String parkingLocation="";
+            if(location.distanceTo(school)>100)
+            {
+                if(location.distanceTo(g1)<15)
+                {
+                //user is parked at g1
+                    parkingLocation="G1";
+                }
+                else if(location.distanceTo(g2)<5)
+                {
+                //user is parked at g2
+                    parkingLocation="G2";
+                }
+            }
+        //will save the data
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("parking data",parkingLocation);
+        editor.putBoolean("parking data set",true);
+        editor.commit();
+        ///
+        return parkingLocation;
+    }
+    public String getParkingInformation()
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String parkingInfo="";
+        if(sharedPreferences.getBoolean("parking data set",false))
+        {
+            parkingInfo=sharedPreferences.getString("parking data","");
+        }
+        return parkingInfo;
+    }
+    public boolean hasParkingData(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getBoolean("parking data set",false);
+    }
+    public boolean hasAltitude(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getBoolean("altitude",false);
+    }
+    public void setAltitude(int pressure)
+    {
+        //set the altitude
+        int altitude=0;
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("altitude",altitude);
+        editor.putBoolean("altitude set",true);
+        editor.commit();
+    }
+    public int getAltitude()
+    {
+        int altitude=0;
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if(sharedPreferences.getBoolean("altitude set",false))
+        {
+        altitude =sharedPreferences.getInt("altitude",-1);
+
+        }
+        return altitude;
+    }
+    public int getFloor()
+    {
+        String parkingData;
+        int altitude=-1;
+        if((hasAltitude())&&(hasParkingData()))
+        {
+            parkingData=getParkingInformation();
+            if(parkingData=="g1")
+            {
+                if((altitude<1)&&(altitude>2))
+                {
+                    //the user is parked on the first floor
+                    return 1;
+                }
+            }
+            else if(parkingData=="g3")
+            {
+                if((altitude<1)&&(altitude>2))
+                {
+                    //the user is parked on the first floor
+                    return 1;
+                }
+            }
+        }
+        return 0;
     }
 
 }

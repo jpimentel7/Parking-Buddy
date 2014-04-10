@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import com.example.ParkingBuddy.ParkingData.ParkingData;
+import com.example.ParkingBuddy.Services.PressureHandler;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,6 +30,7 @@ public class MyActivity extends Activity
      */
     ParkingData parkingData;
     LocationManager locationManager;
+    PressureHandler pressureHandler;
     GoogleMap map;
     final static String TAG="test";
     boolean markerPlaced=false;
@@ -82,7 +84,7 @@ public class MyActivity extends Activity
     private void configure()
     {
         //this method will init everything
-
+        pressureHandler=new PressureHandler();
         //get the last known location
         locationManager=(LocationManager)getSystemService(getApplicationContext().LOCATION_SERVICE);
         Location userLocation=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -97,7 +99,9 @@ public class MyActivity extends Activity
     }
     public void checkRequirements(){
         //checks for gps
-        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)==false){
+        if((locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)==false)||
+                (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)==false))
+        {
 
         }
         //checks for pedometer
