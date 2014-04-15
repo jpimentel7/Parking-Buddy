@@ -86,6 +86,10 @@ public class ParkingData
                     parkingLocation="G2";
                 }
             }
+            else
+            {
+                parkingLocation="My Car";
+            }
         //will save the data
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -158,7 +162,34 @@ public class ParkingData
                 }
             }
         }
-        return 0;
+        return altitude;
+    }
+    public boolean isStaff()
+    {
+        boolean staffLot=false;
+        if(hasParkingData()){
+            if(getParkingInformation()=="g1")
+            {
+                return true;
+            }
+        }
+        return staffLot;
+    }
+    public boolean atSchool(Location location)
+    {
+        boolean atSchool=false;
+        if(location.distanceTo(school)>100){
+            atSchool=true;
+        }
+        return atSchool;
+    }
+    public boolean alertUser()
+    {
+        return false;
+    }
+    public void setAlertUser()
+    {
+
     }
 
 }

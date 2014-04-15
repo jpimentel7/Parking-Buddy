@@ -1,13 +1,17 @@
 package com.example.ParkingBuddy;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +22,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -30,13 +35,14 @@ public class MyActivity extends Activity
      */
     ParkingData parkingData;
     LocationManager locationManager;
+    LocationListener locationListener;
     PressureHandler pressureHandler;
     GoogleMap map;
     final static String TAG="test";
     boolean markerPlaced=false;
     // all the sensors we are testing for
     boolean hasPedometer;
-    boolean hasNetwork;
+    boolean hasBarometer;
     boolean hasGpsEnable;
 
     @Override
@@ -45,10 +51,17 @@ public class MyActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         //will set everything up
-        //checkRequirements();
         configure();
         //check to see if there is a valid saved location and sets a marker if there is
         //for when the user closes the app and restarts
+        checkRequirements();
+        //will only start automode if it is available
+        if(hasPedometer){
+            //enable auto mode
+            Toast toast= Toast.makeText(getApplicationContext(),"look i have a pedometer",Toast.LENGTH_LONG);
+            toast.show();
+        }
+        ///////
         if((parkingData.locationSaved())&&(markerPlaced==false))
         {
             Log.e(TAG,"location has been set when app restarted");
@@ -66,7 +79,7 @@ public class MyActivity extends Activity
         @Override
         public void onClick(View view) {
             //get the current location and sets a marker
-           getLocation();
+           setLocation();
         }
     };
     View.OnClickListener clearHandler = new View.OnClickListener()
@@ -102,18 +115,32 @@ public class MyActivity extends Activity
         if((locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)==false)||
                 (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)==false))
         {
-
+            hasGpsEnable=false;
+            //will open the location settings startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
         }
         //checks for pedometer
-        SensorManager sensorManager;
+        PackageManager manager = getPackageManager();
+        hasPedometer = manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR);
+        hasBarometer=manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_BAROMETER);
+        if(hasGpsEnable!=true){
+        new AlertDialog.Builder(this)
+                .setTitle("GPS")
+                .setMessage("Must Enable Gps For The App To Work Correctly")
+                .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+                    }
+                })
+                .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .show();
+        }
 
     }
-    public void alertUser(){
-
-    }
-
-
-    public void getLocation()
+    public void setLocation()
     {
         //this methods requests a location update and when the location is aquired
         //it is passed to setMarker and then the updates are canceled
@@ -122,11 +149,11 @@ public class MyActivity extends Activity
         }
         Log.e(TAG,"location is being requested");
 
-        LocationListener locationListener= new LocationListener() {
+       locationListener= new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 setMarker(location);
-                locationManager.removeUpdates(this);
+
             }
 
             @Override
@@ -144,13 +171,14 @@ public class MyActivity extends Activity
 
             }
         };
-
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
     }
 
     public void setMarker(Location location)
     {
+        //will turn off update
+        locationManager.removeUpdates(locationListener);
         //will save the location to the shared preferences
         parkingData.saveLocation(location);
         //will add a maker with the users location if there is not a marker in place
@@ -158,9 +186,26 @@ public class MyActivity extends Activity
         if(parkingData.locationSaved()&&(markerPlaced==false)){
             // will display the maker
             Log.e(TAG,"location maker set");
-            MarkerOptions marker = new MarkerOptions().position(
-                    new LatLng(parkingData.getUserLocation().getLatitude(), parkingData.getUserLocation().getLongitude()
-                    )).title("My Car");
+            //will make the marker red if the user is parked in a staff parking lot
+            Float isStaff=BitmapDescriptorFactory.HUE_ORANGE;
+            if(parkingData.isStaff())
+            {
+                isStaff=BitmapDescriptorFactory.HUE_RED;
+            }
+            else
+            {
+                isStaff=BitmapDescriptorFactory.HUE_BLUE;
+            }
+            //sets the marker
+            //new to make sure that if the user is not at school that we dont add the floor
+            //also that if we could not get the floor or if the barometer is unavilable that we dont
+            //set the floor
+            MarkerOptions marker = new MarkerOptions()
+                    .position(new LatLng(parkingData.getUserLocation().getLatitude(), parkingData.getUserLocation().getLongitude()))
+                    // csun information.title(parkingData.getParkingInformation()+parkingData.getFloor())
+                    .title("My Car")
+                    .icon(BitmapDescriptorFactory.defaultMarker(isStaff));
+
             map.addMarker(marker);
             markerPlaced=true;
         }
@@ -173,6 +218,16 @@ public class MyActivity extends Activity
         if(parkingData.locationSaved()&&(markerPlaced==false)){
             // will display the maker
             Log.e(TAG,"location maker set");
+            float isStaff;
+            if(parkingData.isStaff())
+            {
+                isStaff=BitmapDescriptorFactory.HUE_RED;
+            }
+            else
+            {
+                isStaff=BitmapDescriptorFactory.HUE_BLUE;
+            }
+
             MarkerOptions marker = new MarkerOptions().position(
                     new LatLng(parkingData.getUserLocation().getLatitude(), parkingData.getUserLocation().getLongitude()
                     )).title("My Car");

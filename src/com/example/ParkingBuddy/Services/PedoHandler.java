@@ -22,7 +22,6 @@ import com.example.ParkingBuddy.ParkingData.ParkingData;
 public class PedoHandler extends Service implements SensorEventListener
 {
     private SensorManager sensorManager;
-    private int count=0;
     private static final String TAG ="service";
     LocationManager locationManager;
     Location carLocation;
@@ -53,13 +52,8 @@ public class PedoHandler extends Service implements SensorEventListener
 
         if(event.values[0]==1.0f)
         {
-            Log.e(TAG,"look i dectected a change and updated count:"+count);
-            count++;
-            //the location is saved after the third step and the location manager is started
-            if(count==2){
-                startLocationManager();
-            }
-
+            Log.e(TAG,"look i dectected a change and updated count:");
+            startLocationManager();
 
         }
 
@@ -72,12 +66,16 @@ public class PedoHandler extends Service implements SensorEventListener
         locationListener= new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                //will only stop the service if the user is near school
+                //in case the pedometer is set off by accident
+                if(parkingData.atSchool(location)){
                 parkingData.saveLocation(carLocation);
                 //gives a quick vibrate to let the user know his location has been saved
                 Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 // Vibrate for 300 milliseconds
                 v.vibrate(300);
                 stopSelf();
+                }
 
             }
 
