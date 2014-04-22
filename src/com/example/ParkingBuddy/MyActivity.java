@@ -52,16 +52,7 @@ public class MyActivity extends Activity
         setContentView(R.layout.main);
         //will set everything up
         configure();
-        //check to see if there is a valid saved location and sets a marker if there is
-        //for when the user closes the app and restarts
-        checkRequirements();
         //will only start automode if it is available
-        if(hasPedometer){
-            //enable auto mode
-            Toast toast= Toast.makeText(getApplicationContext(),"look i have a pedometer",Toast.LENGTH_LONG);
-            toast.show();
-        }
-        ///////
         if((parkingData.locationSaved())&&(markerPlaced==false))
         {
             Log.e(TAG,"location has been set when app restarted");
@@ -96,49 +87,50 @@ public class MyActivity extends Activity
     };
     private void configure()
     {
-        //this method will init everything
-        pressureHandler=new PressureHandler();
-        //get the last known location
         locationManager=(LocationManager)getSystemService(getApplicationContext().LOCATION_SERVICE);
         Location userLocation=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
         //initis the sharedpreferences
         parkingData= new ParkingData(getApplicationContext());
+
         //centers google maps
         map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
         CameraPosition cameraPosition = new CameraPosition.Builder().target(
                 new LatLng(userLocation.getLatitude(),userLocation.getLongitude())).zoom(17).build();
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         map.setMyLocationEnabled(true);
-    }
-    public void checkRequirements(){
-        //checks for gps
-        if((locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)==false)||
-                (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)==false))
+
+        //checks to see if the gps is turned on
+        if((locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)==false))
         {
             hasGpsEnable=false;
-            //will open the location settings startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            new AlertDialog.Builder(this)
+                    .setTitle("GPS")
+                    .setMessage("Must Enable Gps For The App To Work Correctly")
+                    .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // continue with delete
+                        }
+                    })
+                    .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    })
+                    .show();
         }
-        //checks for pedometer
+
+        //checks for pedometer and pressure sensor
         PackageManager manager = getPackageManager();
         hasPedometer = manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR);
         hasBarometer=manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_BAROMETER);
-        if(hasGpsEnable!=true){
-        new AlertDialog.Builder(this)
-                .setTitle("GPS")
-                .setMessage("Must Enable Gps For The App To Work Correctly")
-                .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // continue with delete
-                    }
-                })
-                .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .show();
+        if(hasBarometer==false){
+            parkingData.setPedometer(false);
         }
-
+        if(hasBarometer==true){
+            pressureHandler=new PressureHandler();
+            parkingData.setPressureSensor(false);
+        }
     }
     public void setLocation()
     {
@@ -152,6 +144,7 @@ public class MyActivity extends Activity
        locationListener= new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                Log.e(TAG,"location found");
                 setMarker(location);
 
             }
@@ -171,7 +164,7 @@ public class MyActivity extends Activity
 
             }
         };
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
     }
 
@@ -183,28 +176,22 @@ public class MyActivity extends Activity
         parkingData.saveLocation(location);
         //will add a maker with the users location if there is not a marker in place
         //should check how old the location data is maybe if older then 10 hours delete
-        if(parkingData.locationSaved()&&(markerPlaced==false)){
-            // will display the maker
-            Log.e(TAG,"location maker set");
-            //will make the marker red if the user is parked in a staff parking lot
-            Float isStaff=BitmapDescriptorFactory.HUE_ORANGE;
-            if(parkingData.isStaff())
-            {
-                isStaff=BitmapDescriptorFactory.HUE_RED;
-            }
-            else
-            {
-                isStaff=BitmapDescriptorFactory.HUE_BLUE;
-            }
+        if(markerPlaced==false){
             //sets the marker
             //new to make sure that if the user is not at school that we dont add the floor
             //also that if we could not get the floor or if the barometer is unavilable that we dont
             //set the floor
+            String parkingInformation="";
+            parkingInformation=parkingData.getCarParkingInformation();
+            if(parkingData.hasPressureSensor()){
+                parkingInformation=parkingInformation+"/n"+parkingData.getFloor();
+            }
+
             MarkerOptions marker = new MarkerOptions()
                     .position(new LatLng(parkingData.getUserLocation().getLatitude(), parkingData.getUserLocation().getLongitude()))
                     // csun information.title(parkingData.getParkingInformation()+parkingData.getFloor())
-                    .title("My Car")
-                    .icon(BitmapDescriptorFactory.defaultMarker(isStaff));
+                    .title(parkingInformation)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
             map.addMarker(marker);
             markerPlaced=true;
@@ -217,20 +204,18 @@ public class MyActivity extends Activity
         //will get the last saved location
         if(parkingData.locationSaved()&&(markerPlaced==false)){
             // will display the maker
-            Log.e(TAG,"location maker set");
-            float isStaff;
-            if(parkingData.isStaff())
-            {
-                isStaff=BitmapDescriptorFactory.HUE_RED;
-            }
-            else
-            {
-                isStaff=BitmapDescriptorFactory.HUE_BLUE;
+            String parkingInformation="";
+            parkingInformation=parkingData.getCarParkingInformation();
+            if(parkingData.hasPressureSensor()){
+                parkingInformation=parkingInformation+"/n"+parkingData.getFloor();
             }
 
-            MarkerOptions marker = new MarkerOptions().position(
-                    new LatLng(parkingData.getUserLocation().getLatitude(), parkingData.getUserLocation().getLongitude()
-                    )).title("My Car");
+            MarkerOptions marker = new MarkerOptions()
+                    .position(new LatLng(parkingData.getUserLocation().getLatitude(), parkingData.getUserLocation().getLongitude()))
+                            // csun information.title(parkingData.getParkingInformation()+parkingData.getFloor())
+                    .title("My Car")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+
             map.addMarker(marker);
             markerPlaced=true;
         }
@@ -245,6 +230,13 @@ public class MyActivity extends Activity
             Log.e(TAG,"location has been set Onrestarted");
             setMarker();
         }
+        //recenters the map
+        Location userLocation=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(
+                new LatLng(userLocation.getLatitude(),userLocation.getLongitude())).zoom(17).build();
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        map.setMyLocationEnabled(true);
 
     }
 
@@ -256,6 +248,13 @@ public class MyActivity extends Activity
             Log.e(TAG,"location has been set onResume");
             setMarker();
         }
+        //recenters the map
+        Location userLocation=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(
+                new LatLng(userLocation.getLatitude(),userLocation.getLongitude())).zoom(17).build();
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        map.setMyLocationEnabled(true);
     }
 
     @Override

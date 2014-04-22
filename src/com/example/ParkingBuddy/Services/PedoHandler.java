@@ -27,6 +27,8 @@ public class PedoHandler extends Service implements SensorEventListener
     Location carLocation;
     ParkingData parkingData;
     LocationListener locationListener;
+    //need to save the pressure too
+    PressureHandler pressureHandler;
 
     @Override
     public void onCreate()
@@ -68,7 +70,11 @@ public class PedoHandler extends Service implements SensorEventListener
             public void onLocationChanged(Location location) {
                 //will only stop the service if the user is near school
                 //in case the pedometer is set off by accident
-                if(parkingData.atSchool(location)){
+                Location school=new Location("CSUN");
+                school.setLatitude(34.242739);
+                school.setLongitude(-118.526223);
+
+                if(location.distanceTo(school)<1000){
                 parkingData.saveLocation(carLocation);
                 //gives a quick vibrate to let the user know his location has been saved
                 Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);

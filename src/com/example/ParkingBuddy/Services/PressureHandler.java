@@ -21,8 +21,7 @@ public class PressureHandler extends Activity implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        //parking data.setAltitude()
-
+       parkingData.setAltitude(event.values[0]);
     }
 
     @Override

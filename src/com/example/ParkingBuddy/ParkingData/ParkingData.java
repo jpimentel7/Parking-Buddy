@@ -2,9 +2,15 @@ package com.example.ParkingBuddy.ParkingData;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.location.Location;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Scanner;
 
 
 /**
@@ -15,17 +21,6 @@ public class ParkingData
     private Context context;
     private boolean userLocation=false;
     private Location school;
-    //Parking lots
-    Location g1;
-    Location g2;
-    Location g3;
-    Location g4;
-    Location g5;
-    Location g6;
-    Location g7;
-    Location g8;
-    Location g9;
-
 
     public ParkingData(Context con)
     {
@@ -69,127 +64,167 @@ public class ParkingData
         editor.putString("lat","0.0");
         editor.commit();
     }
+    protected Location getCarLocation(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        Location location= new Location(sharedPreferences.getString("car lotName",""));
+        location.setLongitude(Double.parseDouble(sharedPreferences.getString("car long","0.0")));
+        location.setLatitude(Double.parseDouble(sharedPreferences.getString("car lat","0.0")));
+        return location;
 
-    public String ParkingInformation(Location location)
+    }
+    public String getCarParkingInformation()
     {
-        String parkingLocation="";
-            if(location.distanceTo(school)>100)
-            {
-                if(location.distanceTo(g1)<15)
-                {
-                //user is parked at g1
-                    parkingLocation="G1";
-                }
-                else if(location.distanceTo(g2)<5)
-                {
-                //user is parked at g2
-                    parkingLocation="G2";
-                }
+        //finds the closest parking lot
+        Location location[]=getLocationData();
+        Location userLocation=getUserLocation();
+        Location closestLot=new Location("");
+        String result="";
+        double shortest=1000;
+        for(int i=0;i<28;i++){
+            if(location[i].distanceTo(userLocation)<shortest){
+                shortest=location[i].distanceTo(userLocation);
+                result=location[i].getProvider();
+                closestLot=location[i];
             }
-            else
-            {
-                parkingLocation="My Car";
-            }
-        //will save the data
+
+        }
+        //save the cars location to the shared preferences
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("parking data",parkingLocation);
-        editor.putBoolean("parking data set",true);
+        editor.putBoolean("car location",true);
+        editor.putString("car lotName",closestLot.getProvider());
+        editor.putString("car long", Double.toString(closestLot.getLongitude()));
+        editor.putString("car lat",Double.toString(closestLot.getLatitude()));
         editor.commit();
-        ///
-        return parkingLocation;
+
+        return result;
     }
-    public String getParkingInformation()
-    {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String parkingInfo="";
-        if(sharedPreferences.getBoolean("parking data set",false))
-        {
-            parkingInfo=sharedPreferences.getString("parking data","");
+    private Location [] getLocationData(){
+        //returns a array of location objects for all the parking structures
+        AssetManager assetManager = context.getResources().getAssets();
+        Location location[]= new Location[28];
+        try {
+            Scanner scanner= new Scanner(assetManager.open("parkingData"));
+
+            for(int i=0;i<28;i++)
+            {
+                Location parkingLot= new Location(scanner.next());
+                parkingLot.setLatitude(scanner.nextDouble());
+                parkingLot.setLongitude(scanner.nextDouble());
+                location[i]=parkingLot;
+            }
         }
-        return parkingInfo;
+        catch (IOException e) {
+            Toast toast= Toast.makeText(context,"wtf it didnt work",Toast.LENGTH_LONG);
+            toast.show();
+        }
+        return location;
     }
-    public boolean hasParkingData(){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getBoolean("parking data set",false);
-    }
-    public boolean hasAltitude(){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getBoolean("altitude",false);
-    }
-    public void setAltitude(int pressure)
+
+    public String getFloor()
     {
-        //set the altitude
-        int altitude=0;
+        Location carLocation=getCarLocation();
+        Float altitude=getAltitude();
+        if(carLocation.getProvider().contains("g3")){
+            if((altitude>0)&&(altitude<1)){
+
+            }
+            else if ((altitude>0)&&(altitude<1)){
+
+            }
+            else if ((altitude>0)&&(altitude<1)){
+
+            }
+            else if ((altitude>0)&&(altitude<1)){
+
+            }
+            else if ((altitude>0)&&(altitude<1)){
+
+            }
+        }
+        else if(carLocation.getProvider().contains("g8")){
+            if ((altitude>0)&&(altitude<1)){
+
+            }
+            else if ((altitude>0)&&(altitude<1)){
+
+            }
+            else if ((altitude>0)&&(altitude<1)){
+
+            }
+            else if ((altitude>0)&&(altitude<1)){
+
+            }
+            else if ((altitude>0)&&(altitude<1)){
+
+            }
+
+        }
+        else if(carLocation.getProvider().contains("b3")){
+            if ((altitude>0)&&(altitude<1)){
+
+            }
+            else if ((altitude>0)&&(altitude<1)){
+
+            }
+            else if ((altitude>0)&&(altitude<1)){
+
+            }
+            else if ((altitude>0)&&(altitude<1)){
+
+            }
+            else if ((altitude>0)&&(altitude<1)){
+
+            }
+        }
+        else if(carLocation.getProvider().contains("b5")){
+            if ((altitude>0)&&(altitude<1)){
+
+            }
+            else if ((altitude>0)&&(altitude<1)){
+
+            }
+            else if ((altitude>0)&&(altitude<1)){
+
+            }
+            else if ((altitude>0)&&(altitude<1)){
+
+            }
+            else if ((altitude>0)&&(altitude<1)){
+
+            }
+        }
+        //need raw data
+        return "";
+    }
+    public boolean hasPressureSensor(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getBoolean("hasPressureSensor",false);
+    }
+    public void setPressureSensor(Boolean hasSensor){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("altitude",altitude);
-        editor.putBoolean("altitude set",true);
+        editor.putBoolean("hasPressureSensor",true);
         editor.commit();
     }
-    public int getAltitude()
-    {
-        int altitude=0;
+    public boolean hasPedometer(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if(sharedPreferences.getBoolean("altitude set",false))
-        {
-        altitude =sharedPreferences.getInt("altitude",-1);
-
-        }
-        return altitude;
+        return sharedPreferences.getBoolean("hasPedometer",false);
     }
-    public int getFloor()
-    {
-        String parkingData;
-        int altitude=-1;
-        if((hasAltitude())&&(hasParkingData()))
-        {
-            parkingData=getParkingInformation();
-            if(parkingData=="g1")
-            {
-                if((altitude<1)&&(altitude>2))
-                {
-                    //the user is parked on the first floor
-                    return 1;
-                }
-            }
-            else if(parkingData=="g3")
-            {
-                if((altitude<1)&&(altitude>2))
-                {
-                    //the user is parked on the first floor
-                    return 1;
-                }
-            }
-        }
-        return altitude;
+    public void setPedometer(Boolean hasSensor){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("hasPedometer",true);
+        editor.commit();
     }
-    public boolean isStaff()
-    {
-        boolean staffLot=false;
-        if(hasParkingData()){
-            if(getParkingInformation()=="g1")
-            {
-                return true;
-            }
-        }
-        return staffLot;
+    public float getAltitude(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getFloat("altitude", 0);
     }
-    public boolean atSchool(Location location)
-    {
-        boolean atSchool=false;
-        if(location.distanceTo(school)>100){
-            atSchool=true;
-        }
-        return atSchool;
+    public void setAltitude(float altitude){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putFloat("altitude", altitude);
+        editor.commit();
     }
-    public boolean alertUser()
-    {
-        return false;
-    }
-    public void setAlertUser()
-    {
-
-    }
-
 }
