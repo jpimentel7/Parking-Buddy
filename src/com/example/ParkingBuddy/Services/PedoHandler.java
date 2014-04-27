@@ -28,7 +28,7 @@ public class PedoHandler extends Service implements SensorEventListener
     ParkingData parkingData;
     LocationListener locationListener;
     //need to save the pressure too
-    PressureHandler pressureHandler;
+
 
     @Override
     public void onCreate()

@@ -13,19 +13,5 @@
               android:name="com.google.android.gms.maps.MapFragment"
               tools:layout="@layout/main"/>
 
-    <Button
-            android:text="Clear Location"
-            android:id="@+id/clear"
-            android:layout_width="180dp"
-            android:layout_height="48dp"
-            android:layout_gravity="top|right"
-            />
-     <Button
-            android:text="Save Location"
-            android:id="@+id/save"
-            android:layout_width="180dp"
-            android:layout_height="48dp"
-            android:layout_gravity="top|left"
-            />
 
 </FrameLayout>

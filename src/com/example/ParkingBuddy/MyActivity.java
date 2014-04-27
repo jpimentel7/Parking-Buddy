@@ -13,6 +13,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -40,9 +43,9 @@ public class MyActivity extends Activity
     GoogleMap map;
     final static String TAG="test";
     boolean markerPlaced=false;
+    MenuItem menuItem;
     // all the sensors we are testing for
-    boolean hasPedometer;
-    boolean hasBarometer;
+    boolean requestingLocation=false;
     boolean hasGpsEnable;
 
     @Override
@@ -50,58 +53,29 @@ public class MyActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        //will set everything up
-        configure();
         //will only start automode if it is available
-        if((parkingData.locationSaved())&&(markerPlaced==false))
-        {
-            Log.e(TAG,"location has been set when app restarted");
-            setMarker();
-        }
-        //
-        Button saveLocation=(Button)findViewById(R.id.save);
-        Button clearLocation=(Button)findViewById(R.id.clear);
-        saveLocation.setOnClickListener(saveHandler);
-        clearLocation.setOnClickListener(clearHandler);
-      }
-
-    View.OnClickListener saveHandler = new View.OnClickListener()
-    {
-        @Override
-        public void onClick(View view) {
-            //get the current location and sets a marker
-           setLocation();
-        }
-    };
-    View.OnClickListener clearHandler = new View.OnClickListener()
-    {
-        @Override
-        public void onClick(View view)
-        {
-            GoogleMap map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
-            //remove everything on the map including the marker
-            map.clear();
-            markerPlaced=false;
-            parkingData.deleteUserLocation();
-        }
-    };
-    private void configure()
-    {
         locationManager=(LocationManager)getSystemService(getApplicationContext().LOCATION_SERVICE);
-        Location userLocation=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
         //initis the sharedpreferences
         parkingData= new ParkingData(getApplicationContext());
-
+        ///have to check to ssee if location is null
+        Location userLocation=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         //centers google maps
         map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(
-                new LatLng(userLocation.getLatitude(),userLocation.getLongitude())).zoom(17).build();
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         map.setMyLocationEnabled(true);
+        if(userLocation!=null)
+        {
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(
+                    new LatLng(userLocation.getLatitude(),userLocation.getLongitude())).zoom(17).build();
+            map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
+        else
+        {
+            updateCamera();
+        }
 
         //checks to see if the gps is turned on
-        if((locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)==false))
+        if((locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)==false)&&(
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)==false))
         {
             hasGpsEnable=false;
             new AlertDialog.Builder(this)
@@ -120,52 +94,129 @@ public class MyActivity extends Activity
                     .show();
         }
 
-        //checks for pedometer and pressure sensor
-        PackageManager manager = getPackageManager();
-        hasPedometer = manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR);
-        hasBarometer=manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_BAROMETER);
-        if(hasBarometer==false){
-            parkingData.setPedometer(false);
+
+        if((parkingData.locationSaved())&&(markerPlaced==false))
+        {
+            Log.e(TAG,"location has been set when app restarted");
+            setMarker();
         }
-        if(hasBarometer==true){
-            pressureHandler=new PressureHandler();
-            parkingData.setPressureSensor(false);
+
+
+      }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater= getMenuInflater();
+        menuInflater.inflate(R.menu.menu,menu);
+        return true;
+    }
+    //testing new menu
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.addLocation:
+                menuItem = item;
+                menuItem.setActionView(R.layout.progress);
+                menuItem.expandActionView();
+                setLocation();
+                //estTask task = new TestTask();
+                //task.execute("test");
+                break;
+            case R.id.removeLocatoin:
+                GoogleMap map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
+                //remove everything on the map including the marker
+                map.clear();
+                markerPlaced=false;
+                parkingData.deleteUserLocation();
+                break;
+            case R.id.autoMode:
+                Toast toast=Toast.makeText(getApplicationContext(),"Auto Mode On",Toast.LENGTH_SHORT);
+                toast.show();
+                //stuff
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    public void updateCamera(){
+        if(requestingLocation==false)
+        {
+            requestingLocation=true;
+            Toast toast=Toast.makeText(getApplicationContext(),"Acquiring Location",Toast.LENGTH_LONG);
+            toast.show();
+            locationListener= new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    Log.e(TAG,"location found");
+                    locationManager.removeUpdates(locationListener);
+                    requestingLocation=false;
+                    CameraPosition cameraPosition = new CameraPosition.Builder().target(
+                            new LatLng(location.getLatitude(),location.getLongitude())).zoom(17).build();
+                    map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+
+                }
+
+                @Override
+                public void onStatusChanged(String s, int i, Bundle bundle) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String s) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String s) {
+
+                }
+            };
+            locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER,locationListener,null);
         }
     }
     public void setLocation()
     {
         //this methods requests a location update and when the location is aquired
         //it is passed to setMarker and then the updates are canceled
-        if(locationManager==null){
-        locationManager=(LocationManager)getSystemService(getApplicationContext().LOCATION_SERVICE);
-        }
-        Log.e(TAG,"location is being requested");
 
-       locationListener= new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                Log.e(TAG,"location found");
-                setMarker(location);
+        if(requestingLocation==false){
+            requestingLocation=true;
+            Log.e(TAG,"location is being requested");
 
-            }
+           locationListener= new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    Log.e(TAG,"location found");
+                    locationManager.removeUpdates(locationListener);
+                    requestingLocation=false;
+                    if(parkingData.locationSaved()==false){
+                        parkingData.saveLocation(location);
+                         setMarker(location);
+                        menuItem.collapseActionView();
+                        menuItem.setActionView(null);
+                    }
 
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
+                }
 
-            }
+                @Override
+                public void onStatusChanged(String s, int i, Bundle bundle) {
 
-            @Override
-            public void onProviderEnabled(String s) {
+                }
 
-            }
+                @Override
+                public void onProviderEnabled(String s) {
 
-            @Override
-            public void onProviderDisabled(String s) {
+                }
 
-            }
-        };
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                @Override
+                public void onProviderDisabled(String s) {
 
+                }
+            };
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+           }
     }
 
     public void setMarker(Location location)
@@ -173,7 +224,6 @@ public class MyActivity extends Activity
         //will turn off update
         locationManager.removeUpdates(locationListener);
         //will save the location to the shared preferences
-        parkingData.saveLocation(location);
         //will add a maker with the users location if there is not a marker in place
         //should check how old the location data is maybe if older then 10 hours delete
         if(markerPlaced==false){
@@ -183,13 +233,15 @@ public class MyActivity extends Activity
             //set the floor
             String parkingInformation="";
             parkingInformation=parkingData.getCarParkingInformation();
-            if(parkingData.hasPressureSensor()){
-                parkingInformation=parkingInformation+"/n"+parkingData.getFloor();
+            if((parkingInformation!="")&&(parkingData.hasPressureSensor())){
+                parkingInformation=parkingInformation+"\n"+parkingData.getFloor();
+            }
+            if(parkingInformation==""){
+                parkingInformation="My Car";
             }
 
             MarkerOptions marker = new MarkerOptions()
                     .position(new LatLng(parkingData.getUserLocation().getLatitude(), parkingData.getUserLocation().getLongitude()))
-                    // csun information.title(parkingData.getParkingInformation()+parkingData.getFloor())
                     .title(parkingInformation)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
@@ -206,14 +258,16 @@ public class MyActivity extends Activity
             // will display the maker
             String parkingInformation="";
             parkingInformation=parkingData.getCarParkingInformation();
-            if(parkingData.hasPressureSensor()){
-                parkingInformation=parkingInformation+"/n"+parkingData.getFloor();
+            if((parkingInformation!="")&&(parkingData.hasPressureSensor())){
+                parkingInformation=parkingInformation+"\n"+parkingData.getFloor();
+            }
+            if(parkingInformation==""){
+                parkingInformation="My Car";
             }
 
             MarkerOptions marker = new MarkerOptions()
                     .position(new LatLng(parkingData.getUserLocation().getLatitude(), parkingData.getUserLocation().getLongitude()))
-                            // csun information.title(parkingData.getParkingInformation()+parkingData.getFloor())
-                    .title("My Car")
+                    .title(parkingInformation)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
             map.addMarker(marker);
@@ -231,12 +285,7 @@ public class MyActivity extends Activity
             setMarker();
         }
         //recenters the map
-        Location userLocation=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(
-                new LatLng(userLocation.getLatitude(),userLocation.getLongitude())).zoom(17).build();
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        map.setMyLocationEnabled(true);
+        updateCamera();
 
     }
 
@@ -248,13 +297,8 @@ public class MyActivity extends Activity
             Log.e(TAG,"location has been set onResume");
             setMarker();
         }
-        //recenters the map
-        Location userLocation=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(
-                new LatLng(userLocation.getLatitude(),userLocation.getLongitude())).zoom(17).build();
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        map.setMyLocationEnabled(true);
+        updateCamera();
+
     }
 
     @Override
@@ -271,4 +315,5 @@ public class MyActivity extends Activity
     protected void onDestroy() {
         super.onDestroy();
     }
+
 }
