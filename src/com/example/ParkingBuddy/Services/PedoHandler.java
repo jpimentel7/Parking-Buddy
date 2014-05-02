@@ -3,6 +3,7 @@ package com.example.ParkingBuddy.Services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -23,10 +24,11 @@ public class PedoHandler extends Service implements SensorEventListener
 {
     private SensorManager sensorManager;
     private static final String TAG ="service";
+    boolean stepDetected=false;
     LocationManager locationManager;
-    Location carLocation;
     ParkingData parkingData;
     LocationListener locationListener;
+    PackageManager packageManager;
     //need to save the pressure too
 
 
@@ -37,6 +39,7 @@ public class PedoHandler extends Service implements SensorEventListener
         sensorManager=(SensorManager) getApplicationContext().getSystemService(getApplicationContext().SENSOR_SERVICE);
         sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR),SensorManager.SENSOR_DELAY_NORMAL);
         parkingData=new ParkingData(getApplicationContext());
+        packageManager= getApplicationContext().getPackageManager();
         Log.e(TAG, "look i started");
     }
 
@@ -54,8 +57,13 @@ public class PedoHandler extends Service implements SensorEventListener
 
         if(event.values[0]==1.0f)
         {
-            Log.e(TAG,"look i dectected a change and updated count:");
-            startLocationManager();
+            if(stepDetected == false){
+                stepDetected=true;
+                Log.e(TAG,"look i dectected a change and updated count:");
+                startLocationManager();
+                if(packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR))
+                startService(new Intent(this, PressureHandler.class));
+            }
 
         }
 
@@ -63,19 +71,20 @@ public class PedoHandler extends Service implements SensorEventListener
     }
     private void startLocationManager()
     {
-        Log.e(TAG,"i updated the location");
+
         locationManager=(LocationManager)getSystemService(getApplicationContext().LOCATION_SERVICE);
         locationListener= new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                Log.e(TAG,"i updated the location");
                 //will only stop the service if the user is near school
                 //in case the pedometer is set off by accident
                 Location school=new Location("CSUN");
                 school.setLatitude(34.242739);
                 school.setLongitude(-118.526223);
-
-                if(location.distanceTo(school)<1000){
-                parkingData.saveLocation(carLocation);
+                //have to change to like 6000
+                if(location.distanceTo(school)<1000000000){
+                parkingData.saveLocation(location);
                 //gives a quick vibrate to let the user know his location has been saved
                 Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 // Vibrate for 300 milliseconds

@@ -8,7 +8,10 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
+import android.util.Log;
 import com.example.ParkingBuddy.ParkingData.ParkingData;
+
+import static android.hardware.SensorManager.getAltitude;
 
 /**
  * Created by javi on 4/9/14.
@@ -16,9 +19,11 @@ import com.example.ParkingBuddy.ParkingData.ParkingData;
 public class PressureHandler extends Service implements SensorEventListener {
     SensorManager sensorManager;
     ParkingData parkingData;
+    boolean pressureSave=false;
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.e("pedo","look the pedo started");
         sensorManager=(SensorManager)getApplicationContext().getSystemService(SENSOR_SERVICE);
         sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE),SensorManager.SENSOR_DELAY_NORMAL);
         parkingData= new ParkingData(getApplicationContext());
@@ -33,9 +38,12 @@ public class PressureHandler extends Service implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        parkingData.setAltitude(event.values[0]);
-        stopSelf();
-
+        if(pressureSave == false){
+            pressureSave=true;
+            parkingData.setAltitude(getAltitude(SensorManager.PRESSURE_STANDARD_ATMOSPHERE,event.values[0]));
+            Log.e("pedo","the location was saved");
+            stopSelf();
+        }
     }
 
     @Override

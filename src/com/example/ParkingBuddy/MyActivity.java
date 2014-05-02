@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import com.example.ParkingBuddy.ParkingData.ParkingData;
+import com.example.ParkingBuddy.Services.PedoHandler;
 import com.example.ParkingBuddy.Services.PressureHandler;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,7 +40,6 @@ public class MyActivity extends Activity
     ParkingData parkingData;
     LocationManager locationManager;
     LocationListener locationListener;
-    PressureHandler pressureHandler;
     GoogleMap map;
     final static String TAG="test";
     boolean markerPlaced=false;
@@ -47,6 +47,7 @@ public class MyActivity extends Activity
     // all the sensors we are testing for
     boolean requestingLocation=false;
     boolean hasGpsEnable;
+    PackageManager packageManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -100,8 +101,7 @@ public class MyActivity extends Activity
             Log.e(TAG,"location has been set when app restarted");
             setMarker();
         }
-
-
+        packageManager = getApplicationContext().getPackageManager();
       }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -114,12 +114,15 @@ public class MyActivity extends Activity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.addLocation:
-                menuItem = item;
-                menuItem.setActionView(R.layout.progress);
-                menuItem.expandActionView();
-                setLocation();
-                //estTask task = new TestTask();
-                //task.execute("test");
+                if(parkingData.locationSaved() != true){
+                    menuItem = item;
+                    menuItem.setActionView(R.layout.progress);
+                    menuItem.expandActionView();
+                    setLocation();
+                }else{
+                    Toast toast=Toast.makeText(getApplicationContext(),"Location Already Saved",Toast.LENGTH_SHORT);
+                    toast.show();
+                }
                 break;
             case R.id.removeLocatoin:
                 GoogleMap map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
@@ -129,9 +132,18 @@ public class MyActivity extends Activity
                 parkingData.deleteUserLocation();
                 break;
             case R.id.autoMode:
-                Toast toast=Toast.makeText(getApplicationContext(),"Auto Mode On",Toast.LENGTH_SHORT);
-                toast.show();
-                //stuff
+                if((parkingData.locationSaved() != true)&&
+                        (packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR))){
+                    Toast toast=Toast.makeText(getApplicationContext(),"Auto Mode On",Toast.LENGTH_SHORT);
+                    toast.show();
+                    startService(new Intent(this, PedoHandler.class));
+                }else if((packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR))){
+                    Toast toast=Toast.makeText(getApplicationContext(),"Feature Not Supposed",Toast.LENGTH_SHORT);
+                    toast.show();
+                }else{
+                    Toast toast=Toast.makeText(getApplicationContext(),"Location Already Saved",Toast.LENGTH_SHORT);
+                    toast.show();
+                }
                 break;
             default:
                 break;
@@ -143,7 +155,7 @@ public class MyActivity extends Activity
         if(requestingLocation==false)
         {
             requestingLocation=true;
-            Toast toast=Toast.makeText(getApplicationContext(),"Acquiring Location",Toast.LENGTH_LONG);
+            Toast toast=Toast.makeText(getApplicationContext(),"Acquiring Location",Toast.LENGTH_SHORT);
             toast.show();
             locationListener= new LocationListener() {
                 @Override
