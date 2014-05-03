@@ -23,12 +23,14 @@ public class PressureHandler extends Service implements SensorEventListener {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.e("pedo","look the pedo started");
         sensorManager=(SensorManager)getApplicationContext().getSystemService(SENSOR_SERVICE);
         sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE),SensorManager.SENSOR_DELAY_NORMAL);
         parkingData= new ParkingData(getApplicationContext());
     }
 
+    /**
+     * Unregisters the sensor when the service is done.
+     */
     @Override
     public void onDestroy() {
         sensorManager.unregisterListener(this);
@@ -36,12 +38,15 @@ public class PressureHandler extends Service implements SensorEventListener {
 
     }
 
+    /**
+     * Save the users altitude to the database.
+     * @param event
+     */
     @Override
     public void onSensorChanged(SensorEvent event) {
         if(pressureSave == false){
             pressureSave=true;
             parkingData.setAltitude(getAltitude(SensorManager.PRESSURE_STANDARD_ATMOSPHERE,event.values[0]));
-            Log.e("pedo","the location was saved");
             stopSelf();
         }
     }

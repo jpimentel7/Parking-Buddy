@@ -35,34 +35,44 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MyActivity extends Activity
 {
     /**
+     *My Activty control the google maps fragment as well
+     * as the gps and pressure sensor.
+     *
+     * @author Javier Pimentel
+     * @author
+     * @author
+     * @author
+     */
+    private ParkingData parkingData;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    private GoogleMap map;
+    private final static String TAG="test";
+    private boolean markerPlaced=false;
+    private MenuItem menuItem;
+    private boolean requestingLocation=false;
+    private boolean hasGpsEnable;
+    private boolean autoModeEnable=false;
+    private PackageManager packageManager;
+
+    /**
+     *This method is called when the application is first launched
+     * it checks if auto mode is supported, centers the maps to the users
+     * location , and displays a warning if the gps is turned off.
      *
      */
-    ParkingData parkingData;
-    LocationManager locationManager;
-    LocationListener locationListener;
-    GoogleMap map;
-    final static String TAG="test";
-    boolean markerPlaced=false;
-    MenuItem menuItem;
-    // all the sensors we are testing for
-    boolean requestingLocation=false;
-    boolean hasGpsEnable;
-    PackageManager packageManager;
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        //will only start automode if it is available
         locationManager=(LocationManager)getSystemService(getApplicationContext().LOCATION_SERVICE);
-        //initis the sharedpreferences
         parkingData= new ParkingData(getApplicationContext());
-        ///have to check to ssee if location is null
-        Location userLocation=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        //centers google maps
         map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
         map.setMyLocationEnabled(true);
+        packageManager = getApplicationContext().getPackageManager();
+        Location userLocation=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        //If the user has their location off normally getLastKnownLocation will return null
         if(userLocation!=null)
         {
             CameraPosition cameraPosition = new CameraPosition.Builder().target(
@@ -74,7 +84,7 @@ public class MyActivity extends Activity
             updateCamera();
         }
 
-        //checks to see if the gps is turned on
+        //Checks to see if the gps is turned on and displays a message if it is
         if((locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)==false)&&(
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)==false))
         {
@@ -84,7 +94,7 @@ public class MyActivity extends Activity
                     .setMessage("Must Enable Gps For The App To Work Correctly")
                     .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            // continue with delete
+
                         }
                     })
                     .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
@@ -94,14 +104,17 @@ public class MyActivity extends Activity
                     })
                     .show();
         }
-
+        /*
+            Will load a marker if there is a location saved and there is not
+            a marker on the map. Will occur when the user restarts the map
+            or when auto mode saves a location.
+         */
 
         if((parkingData.locationSaved())&&(markerPlaced==false))
         {
-            Log.e(TAG,"location has been set when app restarted");
             setMarker();
         }
-        packageManager = getApplicationContext().getPackageManager();
+
       }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -109,38 +122,67 @@ public class MyActivity extends Activity
         menuInflater.inflate(R.menu.menu,menu);
         return true;
     }
-    //testing new menu
+    /**
+     * Controls what happens when a button on the action bar is pressed.
+     *
+     */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         switch (item.getItemId()) {
             case R.id.addLocation:
-                if(parkingData.locationSaved() != true){
+                /*
+                    When the this button is pressed if there is no location saved
+                    the app will request a location update and save the location.
+                    If the phone has a barometer it will start a service to get the
+                    altitude.
+                 */
+                if(parkingData.locationSaved() != true)
+                {
                     menuItem = item;
                     menuItem.setActionView(R.layout.progress);
                     menuItem.expandActionView();
                     setLocation();
-                }else{
+                    if(packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_BAROMETER))
+                        startService(new Intent(this, PressureHandler.class));
+                }
+                else
+                {
                     Toast toast=Toast.makeText(getApplicationContext(),"Location Already Saved",Toast.LENGTH_SHORT);
                     toast.show();
                 }
                 break;
             case R.id.removeLocatoin:
-                GoogleMap map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
-                //remove everything on the map including the marker
-                map.clear();
-                markerPlaced=false;
-                parkingData.deleteUserLocation();
+                //Removes the marker from the map and also from the database
+                if(parkingData.locationSaved()){
+                    GoogleMap map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
+                    map.clear();
+                    markerPlaced=false;
+                    parkingData.deleteUserLocation();
+                }
                 break;
+
             case R.id.autoMode:
+                /*
+                    Will check to see if the phone has a step detector before starting auto mode
+                    and if the user does not it will display a message
+                */
                 if((parkingData.locationSaved() != true)&&
-                        (packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR))){
+                        (packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR))&&
+                        (autoModeEnable=false))
+                {
+                    autoModeEnable=true;
                     Toast toast=Toast.makeText(getApplicationContext(),"Auto Mode On",Toast.LENGTH_SHORT);
                     toast.show();
                     startService(new Intent(this, PedoHandler.class));
-                }else if((packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR))){
+                }
+                else if((packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR))== false)
+                {
                     Toast toast=Toast.makeText(getApplicationContext(),"Feature Not Supposed",Toast.LENGTH_SHORT);
                     toast.show();
-                }else{
+                }
+                else if (parkingData.locationSaved())
+                {
                     Toast toast=Toast.makeText(getApplicationContext(),"Location Already Saved",Toast.LENGTH_SHORT);
                     toast.show();
                 }
@@ -150,8 +192,10 @@ public class MyActivity extends Activity
         }
         return true;
     }
-
-    public void updateCamera(){
+    /**
+     *Request a location update then updates the view on the map.
+     */
+    private void updateCamera(){
         if(requestingLocation==false)
         {
             requestingLocation=true;
@@ -166,8 +210,6 @@ public class MyActivity extends Activity
                     CameraPosition cameraPosition = new CameraPosition.Builder().target(
                             new LatLng(location.getLatitude(),location.getLongitude())).zoom(17).build();
                     map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-
                 }
 
                 @Override
@@ -188,11 +230,15 @@ public class MyActivity extends Activity
             locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER,locationListener,null);
         }
     }
-    public void setLocation()
-    {
-        //this methods requests a location update and when the location is aquired
-        //it is passed to setMarker and then the updates are canceled
 
+    /**
+     * Request a location update and when the location is found calls a function that
+     * puts a pin on the map. The request will only be made if no other component
+     * is making a request.
+     *
+     * */
+    private void setLocation()
+    {
         if(requestingLocation==false){
             requestingLocation=true;
             Log.e(TAG,"location is being requested");
@@ -227,49 +273,46 @@ public class MyActivity extends Activity
 
                 }
             };
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+            locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, locationListener, null);
            }
     }
 
-    public void setMarker(Location location)
+    /**
+     *Saves the location in the database and then checks if information is
+     * available about the location and put that information on the pin.
+     * @param location
+     */
+    private void setMarker(Location location)
     {
-        //will turn off update
-        locationManager.removeUpdates(locationListener);
-        //will save the location to the shared preferences
-        //will add a maker with the users location if there is not a marker in place
-        //should check how old the location data is maybe if older then 10 hours delete
         if(markerPlaced==false){
-            //sets the marker
-            //new to make sure that if the user is not at school that we dont add the floor
-            //also that if we could not get the floor or if the barometer is unavilable that we dont
-            //set the floor
             String parkingInformation="";
             parkingInformation=parkingData.getCarParkingInformation();
-            if((parkingInformation!="")&&(parkingData.hasPressureSensor())){
+            if((parkingInformation!="")&&(parkingData.hasAltitude())){
                 parkingInformation=parkingInformation+"\n"+parkingData.getFloor();
             }
             if(parkingInformation==""){
                 parkingInformation="My Car";
             }
-
             MarkerOptions marker = new MarkerOptions()
-                    .position(new LatLng(parkingData.getUserLocation().getLatitude(), parkingData.getUserLocation().getLongitude()))
+                    .position(new LatLng(parkingData.getUserLocation().getLatitude(),
+                            parkingData.getUserLocation().getLongitude()))
                     .title(parkingInformation)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-
             map.addMarker(marker);
             markerPlaced=true;
         }
     }
-    public void setMarker()
+
+    /**
+     * Will add a maker with the users location if there is not a marker in place.
+     * This happens when the application is restarted or when using auto mode.
+     */
+    private void setMarker()
     {
-        //will add a maker with the users location if there is not a marker in place
-        //will get the last saved location
         if(parkingData.locationSaved()&&(markerPlaced==false)){
-            // will display the maker
             String parkingInformation="";
             parkingInformation=parkingData.getCarParkingInformation();
-            if((parkingInformation!="")&&(parkingData.hasPressureSensor())){
+            if((parkingInformation!="")&&(parkingData.hasAltitude())){
                 parkingInformation=parkingInformation+"\n"+parkingData.getFloor();
             }
             if(parkingInformation==""){
@@ -286,6 +329,9 @@ public class MyActivity extends Activity
         }
     }
 
+    /**
+     *
+     */
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -296,6 +342,9 @@ public class MyActivity extends Activity
         updateCamera();
     }
 
+    /**
+     *
+     */
     @Override
     protected void onResume() {
         super.onResume();

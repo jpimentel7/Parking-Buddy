@@ -29,8 +29,6 @@ public class PedoHandler extends Service implements SensorEventListener
     ParkingData parkingData;
     LocationListener locationListener;
     PackageManager packageManager;
-    //need to save the pressure too
-
 
     @Override
     public void onCreate()
@@ -40,28 +38,30 @@ public class PedoHandler extends Service implements SensorEventListener
         sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR),SensorManager.SENSOR_DELAY_NORMAL);
         parkingData=new ParkingData(getApplicationContext());
         packageManager= getApplicationContext().getPackageManager();
-        Log.e(TAG, "look i started");
     }
 
     @Override
     public void onDestroy() {
         sensorManager.unregisterListener(this,sensorManager.getDefaultSensor((Sensor.TYPE_STEP_DETECTOR)));
         locationManager.removeUpdates(locationListener);
-        Log.e(TAG,"look i was called");
         super.onDestroy();
     }
 
+    /**
+     * If a step a location location manager will be called to request
+     * a location update. If the phone has barometer a service will
+     * be started to save the users altitude.
+     * @param event
+     */
     @Override
-    public void onSensorChanged(SensorEvent event) {
-        Log.e(TAG,"look i detected a change and the value is:"+event.values[0]);
-
+    public void onSensorChanged(SensorEvent event)
+    {
         if(event.values[0]==1.0f)
         {
             if(stepDetected == false){
                 stepDetected=true;
-                Log.e(TAG,"look i dectected a change and updated count:");
-                startLocationManager();
-                if(packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR))
+                locationManager();
+                if(packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_BAROMETER))
                 startService(new Intent(this, PressureHandler.class));
             }
 
@@ -69,20 +69,21 @@ public class PedoHandler extends Service implements SensorEventListener
 
 
     }
-    private void startLocationManager()
+    /**
+     * Requests a single location update and if the user is within a certain amount of
+     * meter from school the function will save the users location to the database and will
+     * also terminate the service.
+     */
+    private void locationManager()
     {
 
         locationManager=(LocationManager)getSystemService(getApplicationContext().LOCATION_SERVICE);
         locationListener= new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                Log.e(TAG,"i updated the location");
-                //will only stop the service if the user is near school
-                //in case the pedometer is set off by accident
                 Location school=new Location("CSUN");
                 school.setLatitude(34.242739);
                 school.setLongitude(-118.526223);
-                //have to change to like 6000
                 if(location.distanceTo(school)<1000000000){
                 parkingData.saveLocation(location);
                 //gives a quick vibrate to let the user know his location has been saved
@@ -110,7 +111,7 @@ public class PedoHandler extends Service implements SensorEventListener
             }
         };
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
+        locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, locationListener, null);
     }
 
     @Override
