@@ -260,7 +260,6 @@ public class MyActivity extends Activity
             map.addMarker(marker);
             markerPlaced=true;
         }
-
     }
     public void setMarker()
     {
@@ -285,7 +284,6 @@ public class MyActivity extends Activity
             map.addMarker(marker);
             markerPlaced=true;
         }
-
     }
 
     @Override
@@ -293,12 +291,9 @@ public class MyActivity extends Activity
         super.onRestart();
         if((parkingData.locationSaved())&&(markerPlaced==false))
         {
-            Log.e(TAG,"location has been set Onrestarted");
             setMarker();
         }
-        //recenters the map
         updateCamera();
-
     }
 
     @Override
@@ -306,26 +301,9 @@ public class MyActivity extends Activity
         super.onResume();
         if((parkingData.locationSaved())&&(markerPlaced==false))
         {
-            Log.e(TAG,"location has been set onResume");
             setMarker();
         }
         updateCamera();
 
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
 }
