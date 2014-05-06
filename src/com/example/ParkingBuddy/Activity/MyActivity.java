@@ -117,6 +117,7 @@ public class MyActivity extends Activity
 
         if((parkingData.locationSaved())&&(parkingData.hasMarker()))
         {
+            Log.e("wtf","im loading a pin");
             setMarker();
         }
 
@@ -331,29 +332,28 @@ public class MyActivity extends Activity
      */
     private void setMarker()
     {
-        if(parkingData.locationSaved()&&(parkingData.hasMarker()==false)){
-            String parkingInformation="";
-            parkingInformation=parkingData.getCarParkingInformation();
-            if((parkingInformation!="")&&(parkingData.hasAltitude())){
-                parkingInformation=parkingInformation+"\n"+parkingData.getFloor();
-            }
-              /*
-                parkinginfo will equal "" when there is no
-                information about the parking lot in the database.
-                For example when you park off campus.
-              */
-            if(parkingInformation==""){
-                parkingInformation="My Car";
-            }
-
-            MarkerOptions marker = new MarkerOptions()
-                    .position(new LatLng(parkingData.getUserLocation().getLatitude(), parkingData.getUserLocation().getLongitude()))
-                    .title(parkingInformation)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-
-            map.addMarker(marker);
-            parkingData.markerPlaced();
+         String parkingInformation="";
+         parkingInformation=parkingData.getCarParkingInformation();
+         if((parkingInformation!="")&&(parkingData.hasAltitude()))
+         {
+            parkingInformation=parkingInformation+"\n"+parkingData.getFloor();
+         }
+          /*
+          parkinginfo will equal "" when there is no
+          information about the parking lot in the database.
+          For example when you park off campus.
+             */
+        if(parkingInformation=="")
+        {
+            parkingInformation="My Car";
         }
+        MarkerOptions marker = new MarkerOptions()
+            .position(new LatLng(parkingData.getUserLocation().getLatitude(), parkingData.getUserLocation().getLongitude()))
+            .title(parkingInformation)
+            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        map.addMarker(marker);
+        parkingData.markerPlaced();
+
     }
 
     /**
