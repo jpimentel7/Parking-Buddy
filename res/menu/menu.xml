@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+            android:id="@+id/autoMode"
+            android:orderInCategory="100"
+            android:showAsAction="always"
+            android:checkable="true"
+            android:icon="@drawable/auto"
+            android:title="auto"/>
+    <item
+            android:id="@+id/addLocation"
+            android:orderInCategory="100"
+            android:showAsAction="always"
+            android:icon="@drawable/ic_action_new"
+            android:title="add"/>
+    <item
+            android:id="@+id/removeLocatoin"
+            android:orderInCategory="100"
+            android:showAsAction="always"
+            android:icon="@drawable/ic_action_remove"
+            android:title="remove"
+            />
+
+
+</menu>

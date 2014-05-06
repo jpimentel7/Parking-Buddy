@@ -1,4 +1,4 @@
-package com.example.ParkingBuddy;
+package com.example.ParkingBuddy.Activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import com.example.ParkingBuddy.ParkingData.ParkingData;
+import com.example.ParkingBuddy.R;
 import com.example.ParkingBuddy.Services.PedoHandler;
 import com.example.ParkingBuddy.Services.PressureHandler;
 import com.google.android.gms.common.GooglePlayServicesUtil;
