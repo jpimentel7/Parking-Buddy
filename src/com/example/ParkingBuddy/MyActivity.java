@@ -1,5 +1,6 @@
 package com.example.ParkingBuddy;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -48,7 +49,6 @@ public class MyActivity extends Activity
     private LocationListener locationListener;
     private GoogleMap map;
     private final static String TAG="test";
-    private boolean markerPlaced=false;
     private MenuItem menuItem;
     private boolean requestingLocation=false;
     private boolean hasGpsEnable;
@@ -65,6 +65,9 @@ public class MyActivity extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        //Remove the title from the action bar
+        ActionBar actionBar=getActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
         setContentView(R.layout.main);
         locationManager=(LocationManager)getSystemService(getApplicationContext().LOCATION_SERVICE);
         parkingData= new ParkingData(getApplicationContext());
@@ -78,6 +81,7 @@ public class MyActivity extends Activity
             CameraPosition cameraPosition = new CameraPosition.Builder().target(
                     new LatLng(userLocation.getLatitude(),userLocation.getLongitude())).zoom(17).build();
             map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            updateCamera();
         }
         else
         {
@@ -110,7 +114,7 @@ public class MyActivity extends Activity
             or when auto mode saves a location.
          */
 
-        if((parkingData.locationSaved())&&(markerPlaced==false))
+        if((parkingData.locationSaved())&&(parkingData.hasMarker()))
         {
             setMarker();
         }
@@ -137,7 +141,7 @@ public class MyActivity extends Activity
                     If the phone has a barometer it will start a service to get the
                     altitude.
                  */
-                if(parkingData.locationSaved() != true)
+                if(parkingData.locationSaved()==false)
                 {
                     menuItem = item;
                     menuItem.setActionView(R.layout.progress);
@@ -155,21 +159,33 @@ public class MyActivity extends Activity
             case R.id.removeLocatoin:
                 //Removes the marker from the map and also from the database
                 if(parkingData.locationSaved()){
+                    //Allows the user to turn on auto mode again
+                    if(autoModeEnable==true)
+                    {
+                    autoModeEnable=false;
+                    }
                     GoogleMap map=((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
                     map.clear();
-                    markerPlaced=false;
+                    parkingData.makerDeleted();
                     parkingData.deleteUserLocation();
+                }
+                else
+                {
+                    Toast toast=Toast.makeText(getApplicationContext(),"No Location Saved",Toast.LENGTH_SHORT);
+                    toast.show();
                 }
                 break;
 
             case R.id.autoMode:
                 /*
                     Will check to see if the phone has a step detector before starting auto mode
-                    and if the user does not it will display a message
+                    and if the user does not it will display a message.
+                    If auto mode is running or if the location is already saved a message will be
+                    displayed letting the user know that their location is already saved.
                 */
-                if((parkingData.locationSaved() != true)&&
+                if((parkingData.locationSaved()==false)&&
                         (packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR))&&
-                        (autoModeEnable=false))
+                        (autoModeEnable == false))
                 {
                     autoModeEnable=true;
                     Toast toast=Toast.makeText(getApplicationContext(),"Auto Mode On",Toast.LENGTH_SHORT);
@@ -284,12 +300,17 @@ public class MyActivity extends Activity
      */
     private void setMarker(Location location)
     {
-        if(markerPlaced==false){
+        if(parkingData.hasMarker()==false){
             String parkingInformation="";
             parkingInformation=parkingData.getCarParkingInformation();
             if((parkingInformation!="")&&(parkingData.hasAltitude())){
                 parkingInformation=parkingInformation+"\n"+parkingData.getFloor();
             }
+            /*
+                parkinginfo will equal "" when there is no
+                information about the parking lot in the database.
+                For example when you park off campus.
+              */
             if(parkingInformation==""){
                 parkingInformation="My Car";
             }
@@ -299,7 +320,7 @@ public class MyActivity extends Activity
                     .title(parkingInformation)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
             map.addMarker(marker);
-            markerPlaced=true;
+            parkingData.markerPlaced();
         }
     }
 
@@ -309,12 +330,17 @@ public class MyActivity extends Activity
      */
     private void setMarker()
     {
-        if(parkingData.locationSaved()&&(markerPlaced==false)){
+        if(parkingData.locationSaved()&&(parkingData.hasMarker()==false)){
             String parkingInformation="";
             parkingInformation=parkingData.getCarParkingInformation();
             if((parkingInformation!="")&&(parkingData.hasAltitude())){
                 parkingInformation=parkingInformation+"\n"+parkingData.getFloor();
             }
+              /*
+                parkinginfo will equal "" when there is no
+                information about the parking lot in the database.
+                For example when you park off campus.
+              */
             if(parkingInformation==""){
                 parkingInformation="My Car";
             }
@@ -325,17 +351,18 @@ public class MyActivity extends Activity
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
             map.addMarker(marker);
-            markerPlaced=true;
+            parkingData.markerPlaced();
         }
     }
 
     /**
-     *
+     *If there are no pins on the maps but there is a location save
+     * a pin will be place on the map. Occurs when auto mode is called.
      */
     @Override
     protected void onRestart() {
         super.onRestart();
-        if((parkingData.locationSaved())&&(markerPlaced==false))
+        if((parkingData.locationSaved())&&(parkingData.hasMarker()==false))
         {
             setMarker();
         }
@@ -343,12 +370,13 @@ public class MyActivity extends Activity
     }
 
     /**
-     *
+     *If there are no pins on the maps but there is a location save
+     * a pin will be place on the map. Occurs when auto mode is called.
      */
     @Override
     protected void onResume() {
         super.onResume();
-        if((parkingData.locationSaved())&&(markerPlaced==false))
+        if((parkingData.locationSaved())&&(parkingData.hasMarker()==false))
         {
             setMarker();
         }

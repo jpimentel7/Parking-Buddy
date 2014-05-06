@@ -88,7 +88,7 @@ public class ParkingData
         Location userLocation=getUserLocation();
         String result="";
         double shortest=1000;
-        for(int i=0;i<28;i++){
+        for(int i=0;i<25;i++){
             if(location[i].distanceTo(userLocation)<shortest){
                 shortest=location[i].distanceTo(userLocation);
                 result=location[i].getProvider();
@@ -104,11 +104,11 @@ public class ParkingData
     private Location [] getLocationData(){
         //returns a array of location objects for all the parking structures
         AssetManager assetManager = context.getResources().getAssets();
-        Location location[]= new Location[28];
+        Location location[]= new Location[25];
         try {
             Scanner scanner= new Scanner(assetManager.open("parkingData"));
 
-            for(int i=0;i<28;i++)
+            for(int i=0;i<25;i++)
             {
                 Location parkingLot= new Location(scanner.next());
                 parkingLot.setLatitude(scanner.nextDouble());
@@ -130,7 +130,7 @@ public class ParkingData
         if(hasAltitude()){
             Location carLocation=getUserLocation();
             Float altitude=getAltitude();
-            if(carLocation.getProvider().contains("g3")){
+            if(carLocation.getProvider().contains("g3s")){
                 if((altitude>0)&&(altitude<1)){
 
                 }
@@ -229,5 +229,29 @@ public class ParkingData
         editor.putBoolean("has altitude",true);
         editor.commit();
     }
+    /**
+     *
+     */
+    public void deleteAltitude()
+    {
+        editor.putBoolean("has altitude",false);
+        editor.commit();
+
+    }
+    public void markerPlaced(){
+        editor.putBoolean("marker",true);
+        editor.commit();
+    }
+    public void makerDeleted()
+    {
+        editor.putBoolean("marker",false);
+        editor.commit();
+    }
+
+    public boolean hasMarker()
+    {
+        return sharedPreferences.getBoolean("marker",false);
+    }
+
 
 }

@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="apk" name="Parking-Buddy">
-    <output-path>$PROJECT_DIR$/out/artifacts/Parking_Buddy</output-path>
+  <artifact type="apk" name="Parking Buddy">
+    <output-path>$PROJECT_DIR$/out/production</output-path>
     <properties id="android-properties">
       <options>
         <option name="keyStoreUrl" value="file://" />
@@ -11,7 +11,7 @@
         </option>
       </options>
     </properties>
-    <root id="archive" name="Parking-Buddy.apk">
+    <root id="archive" name="Parking Buddy.apk">
       <element id="android-final-package" facet="Parking-Buddy/android/Android" />
     </root>
   </artifact>

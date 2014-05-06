@@ -58,16 +58,22 @@ public class PedoHandler extends Service implements SensorEventListener
     {
         if(event.values[0]==1.0f)
         {
+            /*Ensure that locationManager() and the PressureHandler are only called once*/
             if(stepDetected == false){
                 stepDetected=true;
                 locationManager();
-                if(packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_BAROMETER))
-                startService(new Intent(this, PressureHandler.class));
             }
-
         }
 
 
+    }
+
+    /**
+     * Starts the service that saves the users altitude which will be used to determine
+     * what floor the user is parked on.
+     */
+    private void startPressureHandler(){
+        startService(new Intent(this, PressureHandler.class));
     }
     /**
      * Requests a single location update and if the user is within a certain amount of
@@ -84,13 +90,22 @@ public class PedoHandler extends Service implements SensorEventListener
                 Location school=new Location("CSUN");
                 school.setLatitude(34.242739);
                 school.setLongitude(-118.526223);
+                /* If the user is near school their location will be save and if their phone has a
+                * barometer a service will be started that saves the users altitude in the database.
+                * */
                 if(location.distanceTo(school)<1000000000){
-                parkingData.saveLocation(location);
-                //gives a quick vibrate to let the user know his location has been saved
-                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                // Vibrate for 300 milliseconds
-                v.vibrate(300);
-                stopSelf();
+                    if(packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_BAROMETER))
+                        startPressureHandler();
+                    parkingData.saveLocation(location);
+                    //gives a quick vibration to let the user know his location has been saved
+                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    // Vibrate for 300 milliseconds
+                    v.vibrate(300);
+                    stopSelf();
+                }
+                else
+                {
+                    stepDetected=false;
                 }
 
             }
